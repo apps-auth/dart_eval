@@ -326,6 +326,9 @@ class PushObjectProperty implements EvcOp {
       try {
         if (object is! $Value) {
           runtime.returnValue = runtime.wrap(object);
+        } else if (object is $null) {
+          runtime.returnValue = $null();
+          runtime.args = [];
         } else {
           final result =
               ((object as $Instance).$getProperty(runtime, _property));
