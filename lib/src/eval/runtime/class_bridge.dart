@@ -28,6 +28,18 @@ mixin $InstanceDefaultBridge<T extends Object> on $Bridge<T> {
   }
 
   @override
+  int $getRuntimeType(Runtime runtime) {
+    final data = Runtime.bridgeData[this];
+    try {
+      return data?.subclass?.$getRuntimeType(runtime) ??
+          data?.$runtimeType ??
+          0;
+    } catch (e) {
+      return runtime.lookupType(props.type.type.spec!);
+    }
+  }
+
+  @override
   String toString() {
     return "\$${super.toString()}";
   }

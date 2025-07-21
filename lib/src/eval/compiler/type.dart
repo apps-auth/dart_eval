@@ -178,17 +178,6 @@ class TypeRef {
     }
 
     if (unspecifiedType == null) {
-      // Se ainda não encontrou, procura em todas as bibliotecas pelos tipos visíveis
-      // Isso é necessário para classes bridge que podem estar em diferentes bibliotecas
-      for (final entry in ctx.visibleTypes.entries) {
-        if (entry.value.containsKey(n)) {
-          unspecifiedType = entry.value[n];
-          break;
-        }
-      }
-    }
-
-    if (unspecifiedType == null) {
       throw CompileError(
           'Unknown type $n', typeAnnotation.parent, library, ctx);
     }
