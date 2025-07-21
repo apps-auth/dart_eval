@@ -374,7 +374,7 @@ class $Iterable<E> implements Iterable<E>, $Instance {
       'toSet': BridgeMethodDef(
           BridgeFunctionDef(
             returns: BridgeTypeAnnotation(
-                BridgeTypeRef(CoreTypes.list, [
+                BridgeTypeRef(CoreTypes.set, [
                   BridgeTypeRef.ref('E', []),
                 ]),
                 nullable: false),
@@ -870,8 +870,8 @@ class $Iterable<E> implements Iterable<E>, $Instance {
   static const __$toSet = $Function(_$toSet);
   static $Value? _$toSet(Runtime runtime, $Value? target, List<$Value?> args) {
     final $this = target?.$value as Iterable;
-    final $result = $this.toList();
-    return $List.wrap($result);
+    final $result = $this.toSet();
+    return $Set.wrap($result);
   }
 
   @override

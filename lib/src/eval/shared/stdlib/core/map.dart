@@ -6,8 +6,9 @@ class $Map<K, V> implements Map<K, V>, $Instance {
   $Map.wrap(this.$value);
 
   static void configureForRuntime(Runtime runtime) {
-    return runtime.registerBridgeFunc(
-        'dart:core', 'Map.from', __$Map$from.call);
+    runtime.registerBridgeFunc('dart:core', 'Map.from', __$Map$from.call);
+    runtime.registerBridgeFunc(
+        'dart:core', 'Map.fromEntries', __$Map$fromEntries.call);
   }
 
   static const $type = BridgeTypeRef(CoreTypes.map);
@@ -25,6 +26,25 @@ class $Map<K, V> implements Map<K, V>, $Instance {
               BridgeParameter(
                 'other',
                 BridgeTypeAnnotation($type, nullable: false),
+                false,
+              )
+            ],
+            generics: {'K': BridgeGenericParam(), 'V': BridgeGenericParam()},
+          ),
+          isFactory: true,
+        ),
+        'fromEntries': BridgeConstructorDef(
+          BridgeFunctionDef(
+            returns: BridgeTypeAnnotation($type),
+            params: [
+              BridgeParameter(
+                'entries',
+                BridgeTypeAnnotation(
+                    BridgeTypeRef(CoreTypes.iterable, [
+                      BridgeTypeRef(CoreTypes.mapEntry,
+                          [BridgeTypeRef.ref('K'), BridgeTypeRef.ref('V')])
+                    ]),
+                    nullable: false),
                 false,
               )
             ],
@@ -94,6 +114,16 @@ class $Map<K, V> implements Map<K, V>, $Instance {
                   false),
             ], returns: BridgeTypeAnnotation(BridgeTypeRef.ref('V'))),
             isStatic: false),
+        'putIfAbsent': BridgeMethodDef(
+            BridgeFunctionDef(params: [
+              BridgeParameter(
+                  'key', BridgeTypeAnnotation(BridgeTypeRef.ref('K')), false),
+              BridgeParameter(
+                  'ifAbsent',
+                  BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.function)),
+                  false),
+            ], returns: BridgeTypeAnnotation(BridgeTypeRef.ref('V'))),
+            isStatic: false),
       },
       getters: {
         'entries': BridgeMethodDef(BridgeFunctionDef(
@@ -147,6 +177,8 @@ class $Map<K, V> implements Map<K, V>, $Instance {
         return __containsKey;
       case 'remove':
         return __remove;
+      case 'putIfAbsent':
+        return __putIfAbsent;
       case 'entries':
         return $Iterable.wrap(entries.map((e) => $MapEntry.wrap(e)));
       case 'isEmpty':
@@ -172,6 +204,16 @@ class $Map<K, V> implements Map<K, V>, $Instance {
     final other = args[0]?.$value as Map;
 
     return $Map.wrap(Map.from(other));
+  }
+
+  static const __$Map$fromEntries = $Function(_$Map$fromEntries);
+  static $Value? _$Map$fromEntries(
+      Runtime runtime, $Value? target, List<$Value?> args) {
+    final entries = args[0]?.$value as Iterable;
+    final mapEntries = entries
+        .map((e) => e is MapEntry ? e : (e as $Value).$value as MapEntry);
+
+    return $Map.wrap(Map.fromEntries(mapEntries));
   }
 
   static const $Function __indexGet = $Function(indexGet);
@@ -242,6 +284,25 @@ class $Map<K, V> implements Map<K, V>, $Instance {
 
   static $Value? _remove(Runtime runtime, $Value? target, List<$Value?> args) {
     return (target!.$value as Map).remove(args[0]);
+  }
+
+  static const $Function __putIfAbsent = $Function(_putIfAbsent);
+
+  static $Value? _putIfAbsent(
+      Runtime runtime, $Value? target, List<$Value?> args) {
+    final key = args[0];
+    final ifAbsent = args[1] as EvalCallable;
+    final map = target!.$value as Map;
+
+    final result =
+        map.putIfAbsent(key, () => ifAbsent.call(runtime, null, [])!);
+
+    // Make sure the result is properly wrapped for dart_eval
+    if (result is $Value) {
+      return result;
+    } else {
+      return runtime.wrap(result);
+    }
   }
 
   @override

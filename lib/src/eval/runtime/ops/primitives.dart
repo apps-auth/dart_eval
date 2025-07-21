@@ -318,6 +318,25 @@ class BoxMap implements EvcOp {
   String toString() => 'BoxMap (L$_reg)';
 }
 
+class BoxSet implements EvcOp {
+  BoxSet(Runtime runtime) : _reg = runtime._readInt16();
+
+  BoxSet.make(this._reg);
+
+  final int _reg;
+
+  static const int LEN = Evc.BASE_OPLEN + Evc.I16_LEN;
+
+  @override
+  void run(Runtime runtime) {
+    final reg = _reg;
+    runtime.frame[reg] = $Set.wrap(<$Value>{...(runtime.frame[reg] as Set)});
+  }
+
+  @override
+  String toString() => 'BoxSet (L$_reg)';
+}
+
 class MaybeBoxNull implements EvcOp {
   MaybeBoxNull(Runtime runtime) : _reg = runtime._readInt16();
 
@@ -489,6 +508,23 @@ class PushMap extends EvcOp {
   String toString() => 'PushMap ()';
 }
 
+class PushSet extends EvcOp {
+  PushSet(Runtime runtime);
+
+  PushSet.make();
+
+  static const int LEN = Evc.BASE_OPLEN;
+
+  @override
+  void run(Runtime runtime) {
+    // Create a native Set (unboxed), similar to PushMap
+    runtime.frame[runtime.frameOffset++] = <Object?>{};
+  }
+
+  @override
+  String toString() => 'PushSet ()';
+}
+
 class MapSet extends EvcOp {
   MapSet(Runtime runtime)
       : _map = runtime._readInt16(),
@@ -506,11 +542,49 @@ class MapSet extends EvcOp {
   @override
   void run(Runtime runtime) {
     final frame = runtime.frame;
-    (frame[_map] as Map)[frame[_index]] = frame[_value];
+    final mapOrSet = frame[_map];
+
+    if (mapOrSet is $Set) {
+      // For wrapped Sets, we add the element
+      mapOrSet.add(frame[_value]);
+    } else if (mapOrSet is Set) {
+      // For native Sets, we add the element
+      mapOrSet.add(frame[_value]);
+    } else {
+      // For Maps, we set the key-value pair
+      (mapOrSet as Map)[frame[_index]] = frame[_value];
+    }
   }
 
   @override
   String toString() => 'MapSet (L$_map[L$_index] = L$_value)';
+}
+
+class SetAdd extends EvcOp {
+  SetAdd(Runtime runtime)
+      : _set = runtime._readInt16(),
+        _value = runtime._readInt16();
+
+  SetAdd.make(this._set, this._value);
+
+  final int _set;
+  final int _value;
+
+  static const int LEN = Evc.BASE_OPLEN + Evc.I16_LEN * 2;
+
+  @override
+  void run(Runtime runtime) {
+    final frame = runtime.frame;
+    final set = frame[_set];
+    if (set is $Set) {
+      set.add(frame[_value]);
+    } else {
+      throw Exception('SetAdd: Expected \$Set, got ${set.runtimeType}');
+    }
+  }
+
+  @override
+  String toString() => 'SetAdd (L$_set.add(L$_value))';
 }
 
 class IndexMap extends EvcOp {

@@ -12,20 +12,33 @@ const _boxSetOrMapElements = true;
 
 Variable compileSetOrMapLiteral(SetOrMapLiteral l, CompilerContext ctx) {
   TypeRef? specifiedKeyType, specifiedValueType;
+  bool isSet = false;
   final typeArgs = l.typeArguments;
   if (typeArgs != null) {
-    if (typeArgs.length == 1) {
-      throw CompileError('Sets are not currently supported');
+    final argCount = typeArgs.arguments.length;
+    if (argCount == 1) {
+      // Set literal
+      isSet = true;
+      specifiedKeyType =
+          TypeRef.fromAnnotation(ctx, ctx.library, typeArgs.arguments[0]);
+    } else if (argCount == 2) {
+      // Map literal
+      specifiedKeyType =
+          TypeRef.fromAnnotation(ctx, ctx.library, typeArgs.arguments[0]);
+      specifiedValueType =
+          TypeRef.fromAnnotation(ctx, ctx.library, typeArgs.arguments[1]);
     }
-    specifiedKeyType =
-        TypeRef.fromAnnotation(ctx, ctx.library, typeArgs.arguments[0]);
-    specifiedValueType =
-        TypeRef.fromAnnotation(ctx, ctx.library, typeArgs.arguments[1]);
   }
 
   Variable? _collection;
 
   final elements = l.elements;
+
+  // If no type arguments specified, try to infer from elements
+  if (!isSet && typeArgs == null && elements.isNotEmpty) {
+    // If all elements are expressions (not MapLiteralEntry), it's a Set
+    isSet = elements.every((e) => e is Expression);
+  }
 
   ctx.beginAllocScope();
   final keyResultTypes = <TypeRef>[];
@@ -40,8 +53,15 @@ Variable compileSetOrMapLiteral(SetOrMapLiteral l, CompilerContext ctx) {
   var isEmpty = false;
   if (_collection == null) {
     isEmpty = true;
-    if (specifiedValueType != null ||
-        (specifiedKeyType == null && specifiedValueType == null)) {
+    if (isSet || (specifiedValueType == null && specifiedKeyType != null)) {
+      // Create Set using PushSet operation
+      ctx.pushOp(PushSet.make(), PushSet.LEN);
+      _collection = Variable.alloc(
+          ctx,
+          CoreTypes.set.ref(ctx).copyWith(specifiedTypeArgs: [
+            specifiedKeyType ?? CoreTypes.dynamic.ref(ctx),
+          ], boxed: false));
+    } else {
       // make an empty Map
       ctx.pushOp(PushMap.make(), PushMap.LEN);
       _collection = Variable.alloc(
@@ -50,24 +70,40 @@ Variable compileSetOrMapLiteral(SetOrMapLiteral l, CompilerContext ctx) {
             specifiedKeyType ?? CoreTypes.dynamic.ref(ctx),
             specifiedValueType ?? CoreTypes.dynamic.ref(ctx),
           ], boxed: false));
-    } else {
-      throw CompileError('Sets are not currently supported');
     }
   }
   ctx.endAllocScope(popAdjust: -1);
   ctx.scopeFrameOffset++;
   ctx.allocNest.last++;
 
-  if (specifiedValueType == null && !isEmpty) {
+  // Always handle type inference correctly for both empty and non-empty collections
+  if (isSet || (specifiedValueType == null && specifiedKeyType != null)) {
+    // For Set literals, we only have one type argument
+    final inferredKeyType = isEmpty
+        ? (specifiedKeyType ?? CoreTypes.dynamic.ref(ctx))
+        : TypeRef.commonBaseType(ctx, keyResultTypes.toSet());
+
     return Variable(
         _collection.scopeFrameOffset,
         _collection.type.copyWith(boxed: false, specifiedTypeArgs: [
-          TypeRef.commonBaseType(ctx, keyResultTypes.toSet()),
-          TypeRef.commonBaseType(ctx, valueResultTypes.toSet())
+          inferredKeyType,
+        ]));
+  } else {
+    // For Map literals, we have two type arguments
+    final inferredKeyType = isEmpty
+        ? (specifiedKeyType ?? CoreTypes.dynamic.ref(ctx))
+        : TypeRef.commonBaseType(ctx, keyResultTypes.toSet());
+    final inferredValueType = isEmpty
+        ? (specifiedValueType ?? CoreTypes.dynamic.ref(ctx))
+        : TypeRef.commonBaseType(ctx, valueResultTypes.toSet());
+
+    return Variable(
+        _collection.scopeFrameOffset,
+        _collection.type.copyWith(boxed: false, specifiedTypeArgs: [
+          inferredKeyType,
+          inferredValueType,
         ]));
   }
-
-  return _collection;
 }
 
 Pair<Variable, List<Pair<TypeRef, TypeRef>>> compileSetOrMapElement(
@@ -78,7 +114,28 @@ Pair<Variable, List<Pair<TypeRef, TypeRef>>> compileSetOrMapElement(
     TypeRef? specifiedValueType,
     bool box) {
   if (e is Expression) {
-    throw CompileError('Sets are not currently supported');
+    // Handle Set element
+    if (setOrMap == null) {
+      // Create a new Set using PushSet operation
+      ctx.pushOp(PushSet.make(), PushSet.LEN);
+      setOrMap = Variable.alloc(
+          ctx,
+          CoreTypes.set.ref(ctx).copyWith(specifiedTypeArgs: [
+            specifiedKeyType ?? CoreTypes.dynamic.ref(ctx),
+          ], boxed: false));
+    }
+    // For Set elements, treat the expression as both key and value
+    final elementVariable = compileExpression(e, ctx);
+    final keyType = elementVariable.type;
+    // Box the element if necessary
+    final boxedElement =
+        box ? elementVariable.boxIfNeeded(ctx) : elementVariable;
+    // Add to Set (treated as Map with same key/value)
+    ctx.pushOp(
+        MapSet.make(setOrMap.scopeFrameOffset, boxedElement.scopeFrameOffset,
+            boxedElement.scopeFrameOffset),
+        MapSet.LEN);
+    return Pair(setOrMap, [Pair(keyType, keyType)]);
   } else if (e is MapLiteralEntry) {
     if (setOrMap == null) {
       ctx.pushOp(PushMap.make(), PushMap.LEN);

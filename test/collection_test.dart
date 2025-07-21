@@ -205,5 +205,33 @@ void main() {
 
       expect(runtime.executeLib('package:eval_test/main.dart', 'main'), true);
     });
+
+    test('Map.putIfAbsent()', () {
+      final runtime = compiler.compileWriteAndLoad({
+        'eval_test': {
+          'main.dart': '''
+            bool main() {
+              Map<String, int> map = {'a': 1, 'b': 2};
+              
+              // Test 1: Add new key
+              int result1 = map.putIfAbsent('c', () => 3);
+              bool test1 = result1 == 3 && map['c'] == 3;
+              
+              // Test 2: Existing key should return existing value
+              int result2 = map.putIfAbsent('a', () => 999);
+              bool test2 = result2 == 1 && map['a'] == 1;
+              
+              // Test 3: Function with calculation
+              int result3 = map.putIfAbsent('d', () => 40 + 2);
+              bool test3 = result3 == 42 && map['d'] == 42;
+              
+              return test1 && test2 && test3 && map.length == 4;
+            }
+          '''
+        }
+      });
+
+      expect(runtime.executeLib('package:eval_test/main.dart', 'main'), true);
+    });
   });
 }

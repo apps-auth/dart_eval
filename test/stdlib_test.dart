@@ -513,5 +513,281 @@ void main() {
       final runtime = Runtime.ofProgram(program);
       expect(runtime.executeLib('package:example/main.dart', 'main'), true);
     });
+
+    test('Set.from basic creation', () {
+      final runtime = compiler.compileWriteAndLoad({
+        'example': {
+          'main.dart': '''
+            int main() {
+              final list = [1, 2, 3, 2, 1, 4];
+              final set = Set.from(list);
+              return set.length;
+            }
+          '''
+        }
+      });
+
+      expect(runtime.executeLib('package:example/main.dart', 'main'), 4);
+    });
+
+    test('Set.of constructor', () {
+      final runtime = compiler.compileWriteAndLoad({
+        'example': {
+          'main.dart': '''
+            int main() {
+              final set = Set.of([5, 6, 7, 6, 5]);
+              return set.length;
+            }
+          '''
+        }
+      });
+
+      expect(runtime.executeLib('package:example/main.dart', 'main'), 3);
+    });
+
+    test('Set.identity constructor', () {
+      final runtime = compiler.compileWriteAndLoad({
+        'example': {
+          'main.dart': '''
+            int main() {
+              final set = Set.identity();
+              return set.length;
+            }
+          '''
+        }
+      });
+
+      expect(runtime.executeLib('package:example/main.dart', 'main'), 0);
+    });
+
+    test('Set properties', () {
+      final runtime = compiler.compileWriteAndLoad({
+        'example': {
+          'main.dart': '''
+            bool main() {
+              final emptySet = Set.from([]);
+              final nonEmptySet = Set.from([1, 2]);
+              return emptySet.isEmpty && nonEmptySet.isNotEmpty;
+            }
+          '''
+        }
+      });
+
+      expect(runtime.executeLib('package:example/main.dart', 'main'), true);
+    });
+
+    test('Set with explicit typing', () {
+      final runtime = compiler.compileWriteAndLoad({
+        'example': {
+          'main.dart': '''
+            bool main() {
+              Set<int> set = Set.from([1, 2, 3, 2]);
+              return set.length == 3 && set.contains(2);
+            }
+          '''
+        }
+      });
+
+      expect(runtime.executeLib('package:example/main.dart', 'main'), true);
+    });
+
+    test('Set mutation operations', () {
+      final runtime = compiler.compileWriteAndLoad({
+        'example': {
+          'main.dart': '''
+            bool main() {
+              Set<int> set = Set.from([1, 2]);
+              bool added = set.add(3);
+              bool notAdded = set.add(2); // já existe
+              return added && !notAdded && set.length == 3;
+            }
+          '''
+        }
+      });
+
+      expect(runtime.executeLib('package:example/main.dart', 'main'), true);
+    });
+
+    test('Set addAll operation', () {
+      final runtime = compiler.compileWriteAndLoad({
+        'example': {
+          'main.dart': '''
+            int main() {
+              Set<int> set = Set.from([1, 2]);
+              set.addAll([3, 4, 2]); // 2 já existe
+              return set.length;
+            }
+          '''
+        }
+      });
+
+      expect(runtime.executeLib('package:example/main.dart', 'main'), 4);
+    });
+
+    test('Set remove operation', () {
+      final runtime = compiler.compileWriteAndLoad({
+        'example': {
+          'main.dart': '''
+            bool main() {
+              Set<int> set = Set.from([1, 2, 3]);
+              bool removed = set.remove(2);
+              bool notRemoved = set.remove(5); // não existe
+              return removed && !notRemoved && set.length == 2;
+            }
+          '''
+        }
+      });
+
+      expect(runtime.executeLib('package:example/main.dart', 'main'), true);
+    });
+
+    test('Set clear operation', () {
+      final runtime = compiler.compileWriteAndLoad({
+        'example': {
+          'main.dart': '''
+            bool main() {
+              Set<int> set = Set.from([1, 2, 3]);
+              set.clear();
+              return set.isEmpty && set.length == 0;
+            }
+          '''
+        }
+      });
+
+      expect(runtime.executeLib('package:example/main.dart', 'main'), true);
+    });
+
+    test('Set as Iterable', () {
+      final runtime = compiler.compileWriteAndLoad({
+        'example': {
+          'main.dart': '''
+            int main() {
+              Set<int> set = Set.from([1, 2, 3]);
+              int sum = 0;
+              for (int item in set) {
+                sum += item;
+              }
+              return sum;
+            }
+          '''
+        }
+      });
+
+      expect(runtime.executeLib('package:example/main.dart', 'main'), 6);
+    });
+
+    test('Set.fromIterable with transformation', () {
+      final runtime = compiler.compileWriteAndLoad({
+        'example': {
+          'main.dart': '''
+            int main() {
+              List<int> numbers = [1, 2, 3, 2, 1];
+              Set<int> set = Set.fromIterable(numbers, transform: (x) => x * 2);
+              return set.length; // {2, 4, 6}
+            }
+          '''
+        }
+      });
+
+      expect(runtime.executeLib('package:example/main.dart', 'main'), 3);
+    });
+
+    test('Set union operation', () {
+      final runtime = compiler.compileWriteAndLoad({
+        'example': {
+          'main.dart': '''
+            int main() {
+              Set<int> set1 = Set.from([1, 2, 3]);
+              Set<int> set2 = Set.from([3, 4, 5]);
+              Set<int> result = set1.union(set2);
+              return result.length; // {1, 2, 3, 4, 5}
+            }
+          '''
+        }
+      });
+
+      expect(runtime.executeLib('package:example/main.dart', 'main'), 5);
+    });
+
+    test('Set intersection operation', () {
+      final runtime = compiler.compileWriteAndLoad({
+        'example': {
+          'main.dart': '''
+            int main() {
+              Set<int> set1 = Set.from([1, 2, 3, 4]);
+              Set<int> set2 = Set.from([3, 4, 5, 6]);
+              Set<int> result = set1.intersection(set2);
+              return result.length; // {3, 4}
+            }
+          '''
+        }
+      });
+
+      expect(runtime.executeLib('package:example/main.dart', 'main'), 2);
+    });
+
+    test('Set difference operation', () {
+      final runtime = compiler.compileWriteAndLoad({
+        'example': {
+          'main.dart': '''
+            int main() {
+              Set<int> set1 = Set.from([1, 2, 3, 4]);
+              Set<int> set2 = Set.from([3, 4, 5]);
+              Set<int> result = set1.difference(set2);
+              return result.length; // {1, 2}
+            }
+          '''
+        }
+      });
+
+      expect(runtime.executeLib('package:example/main.dart', 'main'), 2);
+    });
+
+    test('Set removeAll operation', () {
+      final runtime = compiler.compileWriteAndLoad({
+        'example': {
+          'main.dart': '''
+            int main() {
+              Set<int> set = Set.from([1, 2, 3, 4, 5]);
+              set.removeAll([2, 4, 6]); // 6 não existe
+              return set.length; // {1, 3, 5}
+            }
+          '''
+        }
+      });
+
+      expect(runtime.executeLib('package:example/main.dart', 'main'), 3);
+    });
+
+    test('Set with String elements', () {
+      final runtime = compiler.compileWriteAndLoad({
+        'example': {
+          'main.dart': '''
+            bool main() {
+              Set<String> set = Set.from(['a', 'b', 'c', 'b']);
+              return set.length == 3 && set.contains('b');
+            }
+          '''
+        }
+      });
+
+      expect(runtime.executeLib('package:example/main.dart', 'main'), true);
+    });
+
+    test('Set toList conversion', () {
+      final runtime = compiler.compileWriteAndLoad({
+        'example': {
+          'main.dart': '''
+            int main() {
+              Set<int> set = Set.from([3, 1, 2]);
+              List<int> list = set.toList();
+              return list.length;
+            }
+          '''
+        }
+      });
+
+      expect(runtime.executeLib('package:example/main.dart', 'main'), 3);
+    });
   });
 }

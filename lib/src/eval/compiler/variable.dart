@@ -95,6 +95,8 @@ class Variable {
       ctx.pushOp(BoxList.make(v2.scopeFrameOffset), BoxList.LEN);
     } else if (type == CoreTypes.map.ref(ctx)) {
       ctx.pushOp(BoxMap.make(scopeFrameOffset), BoxMap.LEN);
+    } else if (type == CoreTypes.set.ref(ctx)) {
+      ctx.pushOp(BoxSet.make(scopeFrameOffset), BoxSet.LEN);
     } else if (type == CoreTypes.string.ref(ctx)) {
       ctx.pushOp(BoxString.make(scopeFrameOffset), BoxInt.LEN);
     } else if (type == CoreTypes.nullType.ref(ctx)) {

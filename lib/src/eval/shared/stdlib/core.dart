@@ -51,6 +51,7 @@ class DartCorePlugin implements EvalPlugin {
     registry.defineBridgeClass($List.$declaration);
     registry.defineBridgeClass($Map.$declaration);
     registry.defineBridgeClass($MapEntry.$declaration);
+    registry.defineBridgeClass($Set.$declaration);
     registry.defineBridgeClass($Duration.$declaration);
     registry.defineBridgeClass($Future.$declaration);
     registry.defineBridgeClass($Stream.$declaration);
@@ -82,6 +83,7 @@ class DartCorePlugin implements EvalPlugin {
     $List.configureForRuntime(runtime);
     $Map.configureForRuntime(runtime);
     $MapEntry.configureForRuntime(runtime);
+    $Set.configureForRuntime(runtime);
     $Iterable.configureForRuntime(runtime);
     $Duration.configureForRuntime(runtime);
     $Future.configureForRuntime(runtime);

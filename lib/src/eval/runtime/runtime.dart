@@ -371,6 +371,10 @@ class Runtime {
       return recursive
           ? $List.wrap(value.map((v) => wrap(v, recursive: true)).toList())
           : $List.wrap(value);
+    } else if (value is Set) {
+      return recursive
+          ? $Set.wrap(value.map((v) => wrap(v, recursive: true)).toSet())
+          : $Set.wrap(value);
     } else if (value is Map) {
       return recursive
           ? $Map.wrap(value.map((key, value) => MapEntry(
@@ -644,6 +648,9 @@ class Runtime {
       case BoxMap:
         op as BoxMap;
         return [Evc.OP_BOXMAP, ...Evc.i16b(op._reg)];
+      case BoxSet:
+        op as BoxSet;
+        return [Evc.OP_BOXSET, ...Evc.i16b(op._reg)];
       case BoxBool:
         op as BoxBool;
         return [Evc.OP_BOXBOOL, ...Evc.i16b(op._reg)];
@@ -672,6 +679,9 @@ class Runtime {
       case PushMap:
         op as PushMap;
         return [Evc.OP_PUSH_MAP];
+      case PushSet:
+        op as PushSet;
+        return [Evc.OP_PUSH_SET];
       case MapSet:
         op as MapSet;
         return [

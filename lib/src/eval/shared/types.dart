@@ -64,6 +64,9 @@ class CoreTypes {
   /// Bridge type spec for [$MapEntry]
   static const mapEntry = BridgeTypeSpec('dart:core', 'MapEntry');
 
+  /// Bridge type spec for [$Set]
+  static const set = BridgeTypeSpec('dart:core', 'Set');
+
   /// Bridge type spec for [$Iterator]
   static const iterator = BridgeTypeSpec('dart:core', 'Iterator');
 
