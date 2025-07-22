@@ -70,6 +70,42 @@ class $bool implements $Instance {
           constructors: {},
           methods: {
             // Other bool methods defined in builtins.dart
+            '&&': BridgeMethodDef(BridgeFunctionDef(
+                returns: BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.bool)),
+                params: [
+                  BridgeParameter(
+                      'other',
+                      BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.bool)),
+                      false)
+                ],
+                namedParams: [])),
+            '||': BridgeMethodDef(BridgeFunctionDef(
+                returns: BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.bool)),
+                params: [
+                  BridgeParameter(
+                      'other',
+                      BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.bool)),
+                      false)
+                ],
+                namedParams: [])),
+            '==': BridgeMethodDef(BridgeFunctionDef(
+                returns: BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.bool)),
+                params: [
+                  BridgeParameter(
+                      'other',
+                      BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.bool)),
+                      false)
+                ],
+                namedParams: [])),
+            '!=': BridgeMethodDef(BridgeFunctionDef(
+                returns: BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.bool)),
+                params: [
+                  BridgeParameter(
+                      'other',
+                      BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.bool)),
+                      false)
+                ],
+                namedParams: [])),
           },
           wrap: true);
 
@@ -185,6 +221,27 @@ class $String implements $Instance {
       },
       methods: {
         // Other string methods defined in builtins.dart
+        '+': BridgeMethodDef(BridgeFunctionDef(
+            returns: BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.string)),
+            params: [
+              BridgeParameter('other',
+                  BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.string)), false)
+            ],
+            namedParams: [])),
+        '==': BridgeMethodDef(BridgeFunctionDef(
+            returns: BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.bool)),
+            params: [
+              BridgeParameter('other',
+                  BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.string)), false)
+            ],
+            namedParams: [])),
+        '!=': BridgeMethodDef(BridgeFunctionDef(
+            returns: BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.bool)),
+            params: [
+              BridgeParameter('other',
+                  BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.string)), false)
+            ],
+            namedParams: [])),
         'split': BridgeMethodDef(BridgeFunctionDef(
             returns: BridgeTypeAnnotation(BridgeTypeRef(
                 CoreTypes.list, [BridgeTypeRef(CoreTypes.string)])),

@@ -759,6 +759,16 @@ class TypeRef {
       return true;
     }
 
+    // Regra especial: int pode ser implicitamente convertido para num
+    if (this == CoreTypes.int.ref(ctx) && slot == CoreTypes.num.ref(ctx)) {
+      return true;
+    }
+
+    // Regra especial: double pode ser implicitamente convertido para num
+    if (this == CoreTypes.double.ref(ctx) && slot == CoreTypes.num.ref(ctx)) {
+      return true;
+    }
+
     final generics = overrideGenerics ?? specifiedTypeArgs;
 
     if (this == slot) {

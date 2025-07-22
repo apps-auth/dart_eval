@@ -70,6 +70,99 @@ class $num<T extends num> implements $Instance {
                       false),
                 ]),
             isStatic: false),
+        // Mathematical operators (defined in builtins.dart but need bridge declarations)
+        '+': BridgeMethodDef(BridgeFunctionDef(
+            returns: BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.num)),
+            params: [
+              BridgeParameter('other',
+                  BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.num)), false)
+            ],
+            namedParams: [])),
+        '-': BridgeMethodDef(BridgeFunctionDef(
+            returns: BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.num)),
+            params: [
+              BridgeParameter('other',
+                  BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.num)), false)
+            ],
+            namedParams: [])),
+        '*': BridgeMethodDef(BridgeFunctionDef(
+            returns: BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.num)),
+            params: [
+              BridgeParameter('other',
+                  BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.num)), false)
+            ],
+            namedParams: [])),
+        '/': BridgeMethodDef(BridgeFunctionDef(
+            returns: BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.num)),
+            params: [
+              BridgeParameter('other',
+                  BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.num)), false)
+            ],
+            namedParams: [])),
+        '~/': BridgeMethodDef(BridgeFunctionDef(
+            returns: BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.int)),
+            params: [
+              BridgeParameter('other',
+                  BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.num)), false)
+            ],
+            namedParams: [])),
+        '%': BridgeMethodDef(BridgeFunctionDef(
+            returns: BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.num)),
+            params: [
+              BridgeParameter('other',
+                  BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.num)), false)
+            ],
+            namedParams: [])),
+        // Comparison operators
+        '<': BridgeMethodDef(BridgeFunctionDef(
+            returns: BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.bool)),
+            params: [
+              BridgeParameter('other',
+                  BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.num)), false)
+            ],
+            namedParams: [])),
+        '>': BridgeMethodDef(BridgeFunctionDef(
+            returns: BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.bool)),
+            params: [
+              BridgeParameter('other',
+                  BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.num)), false)
+            ],
+            namedParams: [])),
+        '<=': BridgeMethodDef(BridgeFunctionDef(
+            returns: BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.bool)),
+            params: [
+              BridgeParameter('other',
+                  BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.num)), false)
+            ],
+            namedParams: [])),
+        '>=': BridgeMethodDef(BridgeFunctionDef(
+            returns: BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.bool)),
+            params: [
+              BridgeParameter('other',
+                  BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.num)), false)
+            ],
+            namedParams: [])),
+        '==': BridgeMethodDef(BridgeFunctionDef(
+            returns: BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.bool)),
+            params: [
+              BridgeParameter('other',
+                  BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.num)), false)
+            ],
+            namedParams: [])),
+        '!=': BridgeMethodDef(BridgeFunctionDef(
+            returns: BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.bool)),
+            params: [
+              BridgeParameter('other',
+                  BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.num)), false)
+            ],
+            namedParams: [])),
+        'compareTo': BridgeMethodDef(BridgeFunctionDef(
+            returns: BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.int)),
+            params: [
+              BridgeParameter('other',
+                  BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.num)), false)
+            ],
+            namedParams: [])),
       },
       getters: {},
       setters: {},
@@ -400,6 +493,42 @@ class $int extends $num<int> {
                   BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.int)), false),
             ],
             namedParams: [])),
+        // Bitwise operators específicos para int (não herdados de num)
+        '|': BridgeMethodDef(BridgeFunctionDef(
+            returns: BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.int)),
+            params: [
+              BridgeParameter('other',
+                  BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.int)), false)
+            ],
+            namedParams: [])),
+        '&': BridgeMethodDef(BridgeFunctionDef(
+            returns: BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.int)),
+            params: [
+              BridgeParameter('other',
+                  BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.int)), false)
+            ],
+            namedParams: [])),
+        '<<': BridgeMethodDef(BridgeFunctionDef(
+            returns: BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.int)),
+            params: [
+              BridgeParameter('other',
+                  BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.int)), false)
+            ],
+            namedParams: [])),
+        '>>': BridgeMethodDef(BridgeFunctionDef(
+            returns: BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.int)),
+            params: [
+              BridgeParameter('other',
+                  BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.int)), false)
+            ],
+            namedParams: [])),
+        '^': BridgeMethodDef(BridgeFunctionDef(
+            returns: BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.int)),
+            params: [
+              BridgeParameter('other',
+                  BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.int)), false)
+            ],
+            namedParams: [])),
       },
       getters: {},
       setters: {},
@@ -614,6 +743,7 @@ class $double extends $num<double> {
             namedParams: []),
         isStatic: true,
       ),
+      // Mathematical operators should be inherited from $num
     },
     getters: {
       'infinity': _dtDoubleGetter,

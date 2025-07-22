@@ -35,7 +35,7 @@ void compileVariableDeclarationList(
 
       if (type != null) {
         final bool isAssignable =
-            type.resolveTypeChain(ctx).isAssignableTo(ctx, res.type);
+            res.type.resolveTypeChain(ctx).isAssignableTo(ctx, type);
 
         if (!isAssignable) {
           final bool isGeneric = isGenericType(ctx, res.type);
