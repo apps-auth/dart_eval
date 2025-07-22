@@ -200,6 +200,155 @@ class $String implements $Instance {
                   BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.int)), false)
             ],
             namedParams: [])),
+        'codeUnitAt': BridgeMethodDef(BridgeFunctionDef(
+            returns: BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.int)),
+            params: [
+              BridgeParameter('index',
+                  BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.int)), false)
+            ],
+            namedParams: [])),
+        'compareTo': BridgeMethodDef(BridgeFunctionDef(
+            returns: BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.int)),
+            params: [
+              BridgeParameter('other',
+                  BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.string)), false)
+            ],
+            namedParams: [])),
+        'contains': BridgeMethodDef(BridgeFunctionDef(
+            returns: BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.bool)),
+            params: [
+              BridgeParameter('other',
+                  BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.string)), false)
+            ],
+            namedParams: [])),
+        'endsWith': BridgeMethodDef(BridgeFunctionDef(
+            returns: BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.bool)),
+            params: [
+              BridgeParameter('other',
+                  BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.string)), false)
+            ],
+            namedParams: [])),
+        'indexOf': BridgeMethodDef(BridgeFunctionDef(
+            returns: BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.int)),
+            params: [
+              BridgeParameter(
+                  'pattern',
+                  BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.pattern)),
+                  false),
+              BridgeParameter('start',
+                  BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.int)), true)
+            ],
+            namedParams: [])),
+        'lastIndexOf': BridgeMethodDef(BridgeFunctionDef(
+            returns: BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.int)),
+            params: [
+              BridgeParameter(
+                  'pattern',
+                  BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.pattern)),
+                  false),
+              BridgeParameter('start',
+                  BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.int)), true)
+            ],
+            namedParams: [])),
+        'padLeft': BridgeMethodDef(BridgeFunctionDef(
+            returns: BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.string)),
+            params: [
+              BridgeParameter('width',
+                  BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.int)), false),
+              BridgeParameter('padding',
+                  BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.string)), true)
+            ],
+            namedParams: [])),
+        'padRight': BridgeMethodDef(BridgeFunctionDef(
+            returns: BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.string)),
+            params: [
+              BridgeParameter('width',
+                  BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.int)), false),
+              BridgeParameter('padding',
+                  BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.string)), true)
+            ],
+            namedParams: [])),
+        'replaceAll': BridgeMethodDef(BridgeFunctionDef(
+            returns: BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.string)),
+            params: [
+              BridgeParameter(
+                  'from',
+                  BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.pattern)),
+                  false),
+              BridgeParameter('replace',
+                  BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.string)), false)
+            ],
+            namedParams: [])),
+        'replaceFirst': BridgeMethodDef(BridgeFunctionDef(
+            returns: BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.string)),
+            params: [
+              BridgeParameter(
+                  'from',
+                  BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.pattern)),
+                  false),
+              BridgeParameter('to',
+                  BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.string)), false),
+              BridgeParameter('startIndex',
+                  BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.int)), true)
+            ],
+            namedParams: [])),
+        'replaceRange': BridgeMethodDef(BridgeFunctionDef(
+            returns: BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.string)),
+            params: [
+              BridgeParameter('start',
+                  BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.int)), false),
+              BridgeParameter(
+                  'end',
+                  BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.int),
+                      nullable: true),
+                  false),
+              BridgeParameter('replacement',
+                  BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.string)), false)
+            ],
+            namedParams: [])),
+        'startsWith': BridgeMethodDef(BridgeFunctionDef(
+            returns: BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.bool)),
+            params: [
+              BridgeParameter(
+                  'pattern',
+                  BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.pattern)),
+                  false),
+              BridgeParameter('index',
+                  BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.int)), true)
+            ],
+            namedParams: [])),
+        'substring': BridgeMethodDef(BridgeFunctionDef(
+            returns: BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.string)),
+            params: [
+              BridgeParameter('start',
+                  BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.int)), false),
+              BridgeParameter(
+                  'end',
+                  BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.int),
+                      nullable: true),
+                  true)
+            ],
+            namedParams: [])),
+        'toLowerCase': BridgeMethodDef(BridgeFunctionDef(
+            returns: BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.string)),
+            params: [],
+            namedParams: [])),
+        'toUpperCase': BridgeMethodDef(BridgeFunctionDef(
+            returns: BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.string)),
+            params: [],
+            namedParams: [])),
+        'trim': BridgeMethodDef(BridgeFunctionDef(
+            returns: BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.string)),
+            params: [],
+            namedParams: [])),
+        'trimLeft': BridgeMethodDef(BridgeFunctionDef(
+            returns: BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.string)),
+            params: [],
+            namedParams: [])),
+        'trimRight': BridgeMethodDef(BridgeFunctionDef(
+            returns: BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.string)),
+            params: [],
+            namedParams: [])),
       },
       getters: {
         'codeUnits': BridgeMethodDef(BridgeFunctionDef(
