@@ -1173,4 +1173,38 @@ void main() {
       ''');
     });
   });
+
+  test('Generic class with Map<String, T> usage', () {
+    final result = eval(r'''
+    class BaseFilter<T extends Object> {
+      Map<String, Set<String>>? byId;
+      
+      void buildIndexes(Map<String, T> items) {
+        byId = <String, Set<String>>{};
+        
+        for (final entry in items.entries) {
+          final itemId = entry.key;
+          
+          Set<String> idSet = byId!.putIfAbsent(
+            itemId,
+            () => <String>{},
+          );
+          idSet.add(itemId);
+        }
+      }
+      
+      String getResult() {
+        return "Filter with ${byId?.length ?? 0} entries";
+      }
+    }
+    
+    String main() {
+      final filter = BaseFilter<String>();
+      filter.buildIndexes({"order1": "Test Order", "order2": "Another Order"});
+      return filter.getResult();
+    }
+    ''');
+
+    expect(result, 'Filter with 2 entries');
+  });
 }

@@ -60,6 +60,18 @@ void compileClassStructure(ClassDeclaration d, CompilerContext ctx) {
   // PRIMEIRO: Registrar tipos genéricos se existirem
   ctx.temporaryTypes[ctx.library] ??= {};
 
+  // Registrar tipos genéricos da classe no contexto temporário
+  if (d.typeParameters?.typeParameters != null) {
+    for (final param in d.typeParameters!.typeParameters) {
+      final name = param.name.lexeme;
+
+      // Sempre criar um TypeRef para o tipo genérico, não o bound
+      // O bound é usado para verificações de tipo, não para o tipo em si
+      ctx.temporaryTypes[ctx.library]![name] =
+          TypeRef.cache(ctx, ctx.library, name);
+    }
+  }
+
   // SEGUNDO: Criar e registrar o tipo básico nos visibleTypes
   final basicTypeRef = TypeRef.cache(ctx, ctx.library, d.name.lexeme);
   ctx.visibleTypes[ctx.library] ??= {};
