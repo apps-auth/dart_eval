@@ -60,24 +60,15 @@ void _compileSwitchExpressionCases(
 
   // Handle constant pattern cases
   Expression? caseExpression;
-  if (pattern.runtimeType.toString().contains('ConstantPattern')) {
-    try {
-      final dynamic constantPattern = pattern;
-      caseExpression = constantPattern.expression;
-    } catch (e) {
-      throw CompileError(
-          'Unsupported pattern type in switch expression: ${pattern.runtimeType}',
-          currentCase);
-    }
+
+  // Check if pattern is a ConstantPattern using type checking
+  if (pattern is ConstantPattern) {
+    caseExpression = pattern.expression;
   } else {
     throw CompileError(
-        'Only constant patterns and wildcard patterns are currently supported in switch expressions',
+        'Only constant patterns and wildcard patterns are currently supported in switch expressions. '
+        'Pattern type: ${pattern}',
         currentCase);
-  }
-
-  if (caseExpression == null) {
-    throw CompileError(
-        'Could not extract expression from switch case pattern', currentCase);
   }
 
   // Use macroBranch to handle the case matching

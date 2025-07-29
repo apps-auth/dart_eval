@@ -56,19 +56,10 @@ StatementInfo _compileSwitchAsIfElseChain(
           final dynamic pattern = guardedPattern.pattern;
 
           if (pattern != null) {
-            // Try to access the expression property - works for ConstantPattern
-            try {
-              final dynamic constantPattern = pattern;
-              final Expression? expr = constantPattern.expression;
-              if (expr != null) {
-                caseExpression = expr;
-              } else {
-                throw CompileError(
-                    'Switch pattern must have a constant expression. Only enum constants and literal values are supported.',
-                    currentCase);
-              }
-            } catch (e) {
-              // If we can't access expression, it's not a constant pattern
+            // Check if pattern is a ConstantPattern using type checking
+            if (pattern is ConstantPattern) {
+              caseExpression = pattern.expression;
+            } else {
               throw CompileError(
                   'Unsupported switch pattern type. Only constant patterns (enum values, literals) are supported.',
                   currentCase);
