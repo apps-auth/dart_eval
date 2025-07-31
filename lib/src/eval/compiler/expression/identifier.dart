@@ -4,6 +4,7 @@ import 'package:dart_eval/src/eval/bridge/declaration.dart';
 import 'package:dart_eval/src/eval/compiler/context.dart';
 import 'package:dart_eval/src/eval/compiler/errors.dart';
 import 'package:dart_eval/src/eval/compiler/reference.dart';
+import 'package:dart_eval/src/eval/compiler/source.dart';
 import 'package:dart_eval/src/eval/compiler/type.dart';
 import 'package:dart_eval/src/eval/compiler/variable.dart';
 
@@ -35,9 +36,24 @@ Reference compileIdentifierAsReference(Identifier id, CompilerContext ctx) {
         return IdentifierReference(null, '$prefixName.$memberName');
       }
 
-      // If class exists but no static member found, fall through to normal error handling
+      // Check if this is an import prefix access like prefix.member
+      final prefixDeclaration =
+          ctx.visibleDeclarations[ctx.library]?[prefixName];
+      if (prefixDeclaration != null && prefixDeclaration.children != null) {
+        // This is an import prefix, look for the member in its children
+        final memberDeclaration = prefixDeclaration.children![memberName];
+        if (memberDeclaration != null) {
+          // Add this declaration temporarily to the current library's visible declarations
+          // so the normal resolution process can find it
+          ctx.visibleDeclarations[ctx.library]![memberName] =
+              DeclarationOrPrefix(declaration: memberDeclaration);
 
-      // If both approaches fail, rethrow the original error
+          // Return a normal identifier reference that will now resolve correctly
+          return IdentifierReference(null, memberName);
+        }
+      }
+
+      // If all approaches fail, rethrow the original error
       rethrow;
     }
   }
