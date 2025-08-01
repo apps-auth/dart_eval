@@ -498,8 +498,13 @@ DeclarationOrBridge<MethodDeclaration, BridgeMethodDef> resolveInstanceMethod(
       instanceType.name]![methodName];
 
   if (dec != null) {
-    return DeclarationOrBridge(instanceType.file,
-        declaration: dec as MethodDeclaration);
+    // Verificar se é realmente um método antes de fazer o cast
+    if (dec is MethodDeclaration) {
+      return DeclarationOrBridge(instanceType.file, declaration: dec);
+    } else {
+      // Se não é um método (ex: campo estático), não é uma invocação válida
+      throw CompileError('Cannot invoke non-method member $methodName', source);
+    }
   } else {
     final $class = _dec.declaration as ClassDeclaration;
     if ($class.extendsClause == null) {

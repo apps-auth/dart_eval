@@ -237,18 +237,66 @@ class IdentifierReference implements Reference {
           }
         }
         final _name = '${classType.name}.$name';
-        final cls = ctx.topLevelVariableInferredTypes[classType.file];
 
-        if (cls == null) {
-          throw CompileError('Cannot find class: $classType', source);
+        // Primeiro, tentar usar resolveStaticDeclaration para encontrar o campo
+        final staticDeclaration =
+            resolveStaticDeclaration(ctx, classType.file, classType.name, name);
+
+        if (staticDeclaration != null &&
+            staticDeclaration.declaration is VariableDeclaration) {
+          final varDecl = staticDeclaration.declaration as VariableDeclaration;
+          final fieldType = (varDecl.parent as VariableDeclarationList).type;
+
+          TypeRef type;
+          if (fieldType != null) {
+            type = TypeRef.fromAnnotation(ctx, classType.file, fieldType);
+          } else {
+            // Se não tem tipo anotado, tentar infer do initializer
+            type = CoreTypes.dynamic.ref(ctx); // fallback
+          }
+
+          // Tentar buscar o global index na library correta
+          try {
+            final gIndex = ctx.topLevelGlobalIndices[classType.file]![_name]!;
+            ctx.pushOp(LoadGlobal.make(gIndex), LoadGlobal.LEN);
+            ctx.pushOp(PushReturnValue.make(), PushReturnValue.LEN);
+            return Variable.alloc(ctx, type);
+          } catch (e) {
+            // Se não conseguir carregar o global, continua com fallback
+          }
         }
 
-        var type = cls[_name];
+        // Fallback: buscar na library correta onde a classe foi definida
+        TypeRef? type;
+        int? correctLibrary;
+
+        // Tentar encontrar a library onde a classe está definida
+        for (final libId in ctx.topLevelVariableInferredTypes.keys) {
+          final cls = ctx.topLevelVariableInferredTypes[libId];
+          if (cls != null && cls.containsKey(_name)) {
+            type = cls[_name];
+            correctLibrary = libId;
+            break;
+          }
+        }
+
+        if (type == null) {
+          // Se não encontrou, tenta na library do classType como fallback
+          final cls = ctx.topLevelVariableInferredTypes[classType.file];
+          if (cls != null) {
+            type = cls[_name];
+            correctLibrary = classType.file;
+          }
+        }
+
         if (type == null) {
           throw CompileError('Cannot find type: $_name', source);
         }
 
-        final gIndex = ctx.topLevelGlobalIndices[classType.file]![_name]!;
+        // Usar a library correta para buscar o índice global
+        final libraryToUse = correctLibrary ?? classType.file;
+
+        final gIndex = ctx.topLevelGlobalIndices[libraryToUse]![_name]!;
         ctx.pushOp(LoadGlobal.make(gIndex), LoadGlobal.LEN);
         ctx.pushOp(PushReturnValue.make(), PushReturnValue.LEN);
         return Variable.alloc(ctx, type);
