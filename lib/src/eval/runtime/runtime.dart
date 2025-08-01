@@ -1047,7 +1047,7 @@ class RuntimeException implements Exception {
         'RUNTIME STATE\n'
         '=============\n'
         'Program offset: ${runtime._prOffset - 1}\n'
-        'Stack sample: ${formatStackSample(runtime.stack.last, 10, runtime.frameOffset)}\n'
+        'Stack sample: ${runtime.stack.isNotEmpty ? formatStackSample(runtime.stack.last, 10, runtime.frameOffset) : ""}\n'
         'Args sample: ${formatStackSample(runtime.args, 6)}\n'
         'Call stack: ${runtime.callStack}\n'
         'TRACE:\n$prStr';
